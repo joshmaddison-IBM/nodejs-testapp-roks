@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment # just a standard K8S deployment to start with
+metadata:
+  name: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      volumes:
+        - name: mysql-pv
+          persistentVolumeClaim:
+            claimName: mysql-pvc
+      containers:
+      - name: mysql
+        image: mysql
+        env:
+          - name: MYSQL_USER
+            valueFrom:
+              configMapKeyRef:
+                name: mysql-config
+                key: mysql-user
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: mysql-config
+                key: mysql-password
+        volumeMounts:
+          - name:  mysql-pv
+            mountPath:  /var/lib/mysql
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3306
+---
+apiVersion: v1 
+kind: PersistentVolumeClaim 
+metadata:
+  name: mysql-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  selector:
+    app: mysql
+  ports:
+  - port: 3306
+    targetPort: 3306
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+  labels:
+    app: mysql
+data:
+  mysql-user: mysql-GCAT
+  mysql-password: P@ssw0rd! 
