@@ -18,18 +18,28 @@ const listenport = 8080 // by default the Route configuration for NJS on OpenShi
 const webapp = express()
 var queryresult;
 
-MongoClient.connect(url, function(err, db) {
-    if (err) throw err;
-    var dbo = db.db("sampledb");
-    dbo.collection("car").find({}).toArray(function(err, result) {
-        if (err) throw err;
-        console.log(result);
-        queryresult = result;
-        db.close();
-    });
-});
+// MongoClient.connect(url, function(err, db) {
+//     if (err) throw err;
+//     var dbo = db.db("sampledb");
+//     dbo.collection("car").find({}).toArray(function(err, result) {
+//         if (err) throw err;
+//         console.log(result);
+//         queryresult = result;
+//         db.close();
+//     });
+// });
 
 webapp.get('/', (req, res) => {
+    MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("sampledb");
+        dbo.collection("car").find({}).toArray(function(err, result) {
+            if (err) throw err;
+            // console.log(result);
+            queryresult = result;
+            db.close();
+        });
+    });
     res.send(queryresult); // nothing too fancy, just display the contents of the MongoDB database
 })
 
