@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MongoDB Database Test Page</title>
+</head>
+<style type="text/css">
+    th:tr{
+        color: blue;
+    }
+    tr:nth-of-type(2n){ 
+        border: 1px solid black; 
+        background-color: rgba(150, 150, 150, 0.5); 
+  
+    } 
+  
+    td{ 
+        padding: 8px 8px; 
+        border: 1px solid black; 
+    } 
+</style>
+<body>
+    <title>Contents of cars database:</title>
+    <table style="margin-left: 20px;">
+        <th>
+            <tr style="color: red; ">
+            <td>Car No</td>
+            <td>Car data</td>
+            </tr>
+        </th>
+        {%for i in range(0, len)%}
+        <tr>
+            <td>{{i}}</td>
+            <td>{{carlist[i]}}</td>
+        {%endfor%}
+        </tr>
+    </table>  
+</body>
+</html>
